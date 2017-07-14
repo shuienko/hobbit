@@ -73,6 +73,8 @@ func SaveToken(tk string, f *os.File) (int, error) {
   return f.WriteString(tk)
 }
 
+
+// Get access_token
 func Auth() string {
   username := ""
   password := ""
@@ -118,6 +120,8 @@ func Auth() string {
   return response_string
 }
 
+
+// Shorten long URL
 func Shorten(tk string ,longurl string) string {
   urlStr := API_BASEURL + API_SHORT
 
@@ -147,6 +151,7 @@ func Shorten(tk string ,longurl string) string {
 
   return string(body)
 }
+
 
 func main() {
   var token, longUrl string
