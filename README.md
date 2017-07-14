@@ -12,8 +12,9 @@ Returns Bitly short URL to console. That's It.
 * Run `go build hobbit.go`
 
 ## INSTALL
-* Build executable binary or download from [releases](https://github.com/shuienko/hobbit/releases) (macOS only)
-* Place `hobbit` binary under `PATH`
+* Build binary or download It from [releases](https://github.com/shuienko/hobbit/releases) (macOS only)
+* Make It executable: `chmod +x hobbit`
+* Place `hobbit` binary under your `PATH`
 
 ## USAGE
 * `hobbit http://example.com`
