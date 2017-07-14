@@ -8,11 +8,11 @@ import (
       "os"
       "log"
       "fmt"
-      "io/ioutil"
       "regexp"
+      "io/ioutil"
       "net/http"
-      "encoding/base64"
       "net/url"
+      "encoding/base64"
 )
 
 const(
@@ -25,7 +25,7 @@ const(
 )
 
 var(
-      HOME        = os.Getenv("HOME")
+    HOME = os.Getenv("HOME")
 )
 
 
