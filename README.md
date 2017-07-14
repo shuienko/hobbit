@@ -4,7 +4,7 @@ Extremely simple console tool. Takes Long URL as a first argument.
 Returns Bitly short URL to console. That's It.
 
 ## PREREQUISITES
-* OS: Linux/macOS
+* OS: Linux/macOS. Most likely will work on Windows as well but not tested.
 * Bitly account. Get it here https://bitly.com
 
 ## BUILD
@@ -12,7 +12,8 @@ Returns Bitly short URL to console. That's It.
 * Run `go build hobbit.go`
 
 ## INSTALL
-* Build binary or download It from [releases](https://github.com/shuienko/hobbit/releases) (macOS only)
+* Build binary or download It from [releases](https://github.com/shuienko/hobbit/releases)
+* Rename file to `hobbit`
 * Make It executable: `chmod +x hobbit`
 * Place `hobbit` binary under your `PATH`
 
