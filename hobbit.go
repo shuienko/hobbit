@@ -104,7 +104,6 @@ func Auth() string {
     password := ""
 
     // Get username and password from user
-    fmt.Println("Bitly access_token is not set. Let's do It!")
     fmt.Printf("%s: ","username")
     fmt.Scanln(&username)
     fmt.Printf("%s: ", "password")
