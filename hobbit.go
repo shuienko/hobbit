@@ -31,7 +31,6 @@ func SaveConfig(filename string, tk string) error {
 
     // If HOME is empty
     if len(HOME) == 0 {
-      log.Println("HOME environment variable is empty. I'll use current folder")
       path = filename
       config_file, err := os.Create(path)
       defer config_file.Close()
