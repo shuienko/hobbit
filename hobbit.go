@@ -23,22 +23,22 @@ const (
 	API_TOKEN_ERROR_MISSING = "MISSING_ARG_ACCESS_TOKEN"
 )
 
-// Create config file and write token to It
+// SaveConfig creates config file and writes token to it
 func SaveConfig(filename string, tk string) error {
 	HOME := os.Getenv("HOME")
-	var path string = ""
+	var path string
 
 	// If HOME is empty
 	if len(HOME) == 0 {
 		path = filename
-		config_file, err := os.Create(path)
-		defer config_file.Close()
+		configFile, err := os.Create(path)
+		defer configFile.Close()
 		if err != nil {
 			log.Println(err)
 			return err
 		}
 
-		_, err = config_file.WriteString(tk)
+		_, err = configFile.WriteString(tk)
 		if err != nil {
 			log.Println(err)
 			return err
@@ -51,15 +51,15 @@ func SaveConfig(filename string, tk string) error {
 	path = HOME + "/" + filename
 
 	// Create config file and write token to It
-	config_file, err := os.Create(path)
-	defer config_file.Close()
+	configFile, err := os.Create(path)
+	defer configFile.Close()
 
 	if err != nil {
 		log.Println(err)
 		log.Fatal("Can't create config file: ", path, " Check free space and permissions")
 	}
 
-	_, err = config_file.WriteString(tk)
+	_, err = configFile.WriteString(tk)
 	if err != nil {
 		log.Println(err)
 		return err
@@ -68,10 +68,10 @@ func SaveConfig(filename string, tk string) error {
 	return nil
 }
 
-// Get Token from file
+// ReadToken gets Token from file
 func ReadToken(filename string) string {
 	HOME := os.Getenv("HOME")
-	var path string = ""
+	var path string
 
 	if len(HOME) == 0 {
 		path = filename
@@ -94,7 +94,7 @@ func ReadToken(filename string) string {
 	return string(bs)
 }
 
-// Authenticate. Returns access_token
+// Auth performs authentication. Returns access_token
 func Auth() string {
 	username := ""
 	password := ""
@@ -115,8 +115,8 @@ func Auth() string {
 
 	// Set auth header
 	msg := username + ":" + password
-	auth_header := "Basic " + base64.StdEncoding.EncodeToString([]byte(msg))
-	r.Header.Add("Authorization", auth_header)
+	authHeader := "Basic " + base64.StdEncoding.EncodeToString([]byte(msg))
+	r.Header.Add("Authorization", authHeader)
 
 	// Get response
 	resp, err := client.Do(r)
@@ -132,12 +132,12 @@ func Auth() string {
 	}
 
 	// Check errors and return access_token
-	response_string := string(body)
-	_, err = regexp.MatchString("[a-zA-Z0-9]+", response_string)
+	responseString := string(body)
+	_, err = regexp.MatchString("[a-zA-Z0-9]+", responseString)
 	if err != nil {
-		log.Fatal(response_string)
+		log.Fatal(responseString)
 	}
-	return response_string
+	return responseString
 }
 
 // Shorten long URL
