@@ -11,110 +11,39 @@ import (
 	"net/url"
 	"os"
 	"regexp"
+
+	"github.com/howeyc/gopass"
 )
 
 const (
-	API_BASEURL = "https://api-ssl.bitly.com"
-	API_AUTH    = "/oauth/access_token"
-	API_SHORT   = "/v3/shorten"
-	TOKEN_FILE  = ".hobbit_token"
-
-	API_TOKEN_ERROR_INVALID = "INVALID_ARG_ACCESS_TOKEN"
-	API_TOKEN_ERROR_MISSING = "MISSING_ARG_ACCESS_TOKEN"
+	apiBaseURL = "https://api-ssl.bitly.com"
+	apiAuth    = "/oauth/access_token"
+	apiShorten = "/v3/shorten"
 )
-
-// SaveConfig creates config file and writes token to it
-func SaveConfig(filename string, tk string) error {
-	HOME := os.Getenv("HOME")
-	var path string
-
-	// If HOME is empty
-	if len(HOME) == 0 {
-		path = filename
-		configFile, err := os.Create(path)
-		defer configFile.Close()
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-
-		_, err = configFile.WriteString(tk)
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-
-		return nil
-	}
-
-	// Set Path if HOME is not empty
-	path = HOME + "/" + filename
-
-	// Create config file and write token to It
-	configFile, err := os.Create(path)
-	defer configFile.Close()
-
-	if err != nil {
-		log.Println(err)
-		log.Fatal("Can't create config file: ", path, " Check free space and permissions")
-	}
-
-	_, err = configFile.WriteString(tk)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-
-	return nil
-}
-
-// ReadToken gets Token from file
-func ReadToken(filename string) string {
-	HOME := os.Getenv("HOME")
-	var path string
-
-	if len(HOME) == 0 {
-		path = filename
-	} else {
-		path = HOME + "/" + filename
-	}
-
-	f, err := os.Open(path)
-	defer f.Close()
-
-	if err != nil {
-		log.Println(err)
-		return ""
-	}
-
-	stat, _ := f.Stat()
-	bs := make([]byte, stat.Size())
-	f.Read(bs)
-
-	return string(bs)
-}
 
 // Auth performs authentication. Returns access_token
 func Auth() string {
 	username := ""
-	password := ""
 
 	// Get username and password from user
 	fmt.Printf("%s: ", "username")
 	fmt.Scanln(&username)
 	fmt.Printf("%s: ", "password")
-	fmt.Scanln(&password)
+	password, err := gopass.GetPasswd()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Create request
 	client := &http.Client{}
-	urlStr := API_BASEURL + API_AUTH
+	urlStr := apiBaseURL + apiAuth
 	r, err := http.NewRequest("POST", urlStr, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Set auth header
-	msg := username + ":" + password
+	msg := username + ":" + string(password)
 	authHeader := "Basic " + base64.StdEncoding.EncodeToString([]byte(msg))
 	r.Header.Add("Authorization", authHeader)
 
@@ -142,9 +71,9 @@ func Auth() string {
 
 // Shorten long URL
 func Shorten(tk string, longurl string) string {
-	urlStr := API_BASEURL + API_SHORT
+	urlStr := apiBaseURL + apiShorten
 
-	Url, err := url.Parse(urlStr)
+	URL, err := url.Parse(urlStr)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -154,10 +83,10 @@ func Shorten(tk string, longurl string) string {
 	parameters.Add("access_token", tk)
 	parameters.Add("longUrl", longurl)
 	parameters.Add("format", "txt")
-	Url.RawQuery = parameters.Encode()
+	URL.RawQuery = parameters.Encode()
 
 	// Call API endpoint
-	resp, err := http.Get(Url.String())
+	resp, err := http.Get(URL.String())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -172,8 +101,16 @@ func Shorten(tk string, longurl string) string {
 }
 
 func main() {
-	var shortUrl, longUrl string
-	token := ReadToken(TOKEN_FILE)
+	var shortURL, longURL string
+
+	token, ok := os.LookupEnv("BITLY_TOKEN")
+	if !ok {
+		fmt.Println("BITLY_TOKEN environment variable in NOT set. Please provide your Bitly username and pass:")
+		token = Auth()
+		fmt.Println("Add this to your .bashrc or .zshrc:")
+		fmt.Println("export BITLY_TOKEN=" + token)
+		os.Exit(1)
+	}
 
 	// Check argumets
 	if len(os.Args) < 2 {
@@ -182,19 +119,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	longUrl = os.Args[1]
-
-	// Authenticate and save token. 3 attempts
-	for i := 0; i < 3; i++ {
-		shortUrl = Shorten(token, longUrl)
-		if shortUrl == API_TOKEN_ERROR_INVALID || shortUrl == API_TOKEN_ERROR_MISSING {
-			log.Println("Bitly access_token is not set/valid")
-			token = Auth()
-		} else {
-			fmt.Printf(shortUrl)
-			break
-		}
-	}
-
-	SaveConfig(TOKEN_FILE, token)
+	longURL = os.Args[1]
+	shortURL = Shorten(token, longURL)
+	fmt.Printf(shortURL)
 }

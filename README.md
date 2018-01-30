@@ -24,5 +24,6 @@ Returns Bitly short URL to console. That's It.
 
 ## USAGE
 
+* On first run app will ask for Bitly credentials in order to obtain API Token.
 * `hobbit http://example.com`
 * Please keep in mind that `http`/`https` part is obligatory
