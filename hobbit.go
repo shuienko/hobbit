@@ -4,13 +4,13 @@ package main
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
-	"regexp"
 
 	"github.com/howeyc/gopass"
 )
@@ -20,6 +20,13 @@ const (
 	apiAuth    = "/oauth/access_token"
 	apiShorten = "/v3/shorten"
 )
+
+// InvalidLoginResponse type
+type InvalidLoginResponse struct {
+	Code   int    `json:"status_code"`
+	Data   string `json:"data"`
+	Status string `json:"status_txt"`
+}
 
 // Auth performs authentication. Returns access_token
 func Auth() string {
@@ -60,13 +67,14 @@ func Auth() string {
 		log.Fatal(err)
 	}
 
-	// Check errors and return access_token
-	responseString := string(body)
-	_, err = regexp.MatchString("[a-zA-Z0-9]+", responseString)
-	if err != nil {
-		log.Fatal(responseString)
+	respBody := &InvalidLoginResponse{}
+	err = json.Unmarshal(body, respBody)
+	if err == nil {
+		fmt.Println("ERROR:", respBody.Status)
+		os.Exit(1)
 	}
-	return responseString
+
+	return string(body)
 }
 
 // Shorten long URL
@@ -109,7 +117,7 @@ func main() {
 		token = Auth()
 		fmt.Println("Add this to your .bashrc or .zshrc:")
 		fmt.Println("export BITLY_TOKEN=" + token)
-		os.Exit(1)
+		os.Exit(0)
 	}
 
 	// Check argumets
