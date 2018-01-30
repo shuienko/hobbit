@@ -116,7 +116,7 @@ func main() {
 		fmt.Println("BITLY_TOKEN environment variable in NOT set. Please provide your Bitly username and pass:")
 		token = Auth()
 		fmt.Println("Add this to your .bashrc or .zshrc:")
-		fmt.Println("export BITLY_TOKEN=" + token)
+		fmt.Println("    export BITLY_TOKEN=" + token)
 		os.Exit(0)
 	}
 
