@@ -29,7 +29,7 @@ func Auth() string {
 	fmt.Printf("%s: ", "username")
 	fmt.Scanln(&username)
 	fmt.Printf("%s: ", "password")
-	password, err := gopass.GetPasswd()
+	password, err := gopass.GetPasswdMasked()
 	if err != nil {
 		log.Fatal(err)
 	}
