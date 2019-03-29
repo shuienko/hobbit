@@ -9,4 +9,4 @@ steps:
     - export GOPATH="$HOME"
     - go get -d
     - go build
-    - echo SUCCESS
+    - echo SUCCES
