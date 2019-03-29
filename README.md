@@ -1,3 +1,4 @@
+[![Build Status](http://drone.do.ovs.in.ua/api/badges/shuienko/hobbit/status.svg)](http://drone.do.ovs.in.ua/shuienko/hobbit)
 # Hobbit
 
 ## DESCRIPTION
