@@ -9,4 +9,11 @@ steps:
     - export GOPATH="$HOME"
     - go get -d
     - go build
-    - echo SUCCES
+
+- name: test
+  image: golang
+  environment:
+    BITLY_TOKEN:
+      from_secret: bitly_token
+  commands:
+    - ./hobbit https://google.com
