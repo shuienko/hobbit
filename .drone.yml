@@ -16,4 +16,5 @@ steps:
     BITLY_TOKEN:
       from_secret: bitly_token
   commands:
+    - ls -l
     - ./hobbit https://google.com
