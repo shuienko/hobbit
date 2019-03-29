@@ -9,6 +9,7 @@ steps:
     - export GOPATH="$HOME"
     - go get -d
     - go build
+    - ls -l
 
 - name: test
   image: golang
