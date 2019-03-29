@@ -6,8 +6,6 @@ steps:
 - name: build
   image: golang
   commands:
-    - env
-    - mkdir -p /drone/go/{src,bin,pkg}
-    - export GOPATH="/drone/go"
+    - export GOPATH="$HOME"
     - go get
     - go build
