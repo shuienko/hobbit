@@ -8,8 +8,7 @@ steps:
   commands:
     - export GOPATH="$HOME"
     - go get -d
-    - go build
-    - ls -l
+    - go build -o hobbit
 
 - name: test
   image: golang
@@ -17,5 +16,4 @@ steps:
     BITLY_TOKEN:
       from_secret: bitly_token
   commands:
-    - ls -l
     - ./hobbit https://google.com
