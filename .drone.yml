@@ -6,5 +6,7 @@ steps:
 - name: build
   image: golang
   commands:
+    - mkdir -p /go
+    - export GOPATH="/go"
     - go get
     - go build
